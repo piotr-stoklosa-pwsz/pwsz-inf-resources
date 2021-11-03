@@ -156,18 +156,25 @@ class Board {
 		Log.info();
 		Log.info("Turn " + this.turnsCounter);
 
+        int topPosition = 0;
+        Pawn leader = null;
 		for(Pawn pawn : this.pawns) {
 			int rollResult = this.dice.roll();
 			int newPosition = pawn.move(rollResult);
+            if(newPosition > topPosition) {
+                topPosition = newPosition;
+                leader = pawn;
+            }
 			Log.info(pawn.getName() + " new position: " + newPosition);
-
 			if(newPosition >= this.max_position) {
 				this.winner = pawn;
 				throw new WinnerWasCalled();
-			} else if(this.maxTurns > 0 && this.maxTurns == this.turnsCounter) {
-                //find winner
             }
 		}
+	    if(this.maxTurns > 0 && this.maxTurns == this.turnsCounter) {
+            this.winner = leader;
+            throw new WinnerWasCalled();
+        }
 	}
 
     public String getWinnersName() {
